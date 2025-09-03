@@ -42,7 +42,7 @@ const App: React.FC = () => {
   }, [selectedIndex, allEntries]);
 
   return (
-    <div className="flex flex-col bg-stone-100">
+    <div className="flex flex-col h-screen bg-stone-100">
       <Header currentMonth={currentMonth} />
 
       <div 
@@ -50,7 +50,6 @@ const App: React.FC = () => {
         className="flex-1 overflow-y-auto"
         onScroll={handleScroll}
         style={{ 
-          height: 'auto',
           scrollBehavior: isScrollingRef.current ? 'auto' : 'smooth'
         }}
       >

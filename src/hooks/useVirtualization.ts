@@ -4,10 +4,11 @@ import { DateUtils, CalendarUtils } from '../utils';
 
 export const useVirtualization = () => {
     const [scrollTop, setScrollTop] = useState<number>(0);
-    const [containerHeight, setContainerHeight] = useState<number>(0);
+    const [containerHeight, setContainerHeight] = useState<number>(800); // Default height instead of 0
     const containerRef = useRef<HTMLDivElement>(null);
     const isScrollingRef = useRef<boolean>(false);
     const scrollTimeoutRef = useRef<number | null>(null);
+    const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
     const baseDate = useMemo(() => new Date(2020, 0, 1), []);
     const totalMonths = useMemo(() => 240, []);
@@ -19,8 +20,6 @@ export const useVirtualization = () => {
     }, [baseDate]);
 
     const visibleMonths = useMemo<VirtualizedMonthData[]>(() => {
-        if (!containerHeight) return [];
-        
         const buffer = CalendarUtils.MONTH_HEIGHT;
         const startIndex = Math.max(0, Math.floor((scrollTop - buffer) / CalendarUtils.MONTH_HEIGHT));
         const endIndex = Math.min(totalMonths, startIndex + Math.ceil((containerHeight + 2 * buffer) / CalendarUtils.MONTH_HEIGHT));
@@ -40,9 +39,10 @@ export const useVirtualization = () => {
     }, [scrollTop, containerHeight, baseDate, totalMonths]);
 
     const currentMonth = useMemo<Date>(() => {
-        const monthIndex = Math.floor((scrollTop + containerHeight / 2) / CalendarUtils.MONTH_HEIGHT);
-        return DateUtils.addMonths(baseDate, monthIndex);
-    }, [scrollTop, containerHeight, baseDate]);
+        const currentIndex = Math.round(scrollTop / CalendarUtils.MONTH_HEIGHT);
+        const clampedIndex = Math.max(0, Math.min(totalMonths - 1, currentIndex));
+        return DateUtils.addMonths(baseDate, clampedIndex);
+    }, [scrollTop, baseDate, totalMonths]);
 
     const handleScroll = useCallback(() => {
         if (!containerRef.current) return;
@@ -53,11 +53,8 @@ export const useVirtualization = () => {
             clearTimeout(scrollTimeoutRef.current);
         }
         
-        requestAnimationFrame(() => {
-            if (containerRef.current) {
-                setScrollTop(containerRef.current.scrollTop);
-            }
-        });
+        const newScrollTop = containerRef.current.scrollTop;
+        setScrollTop(newScrollTop);
         
         scrollTimeoutRef.current = setTimeout(() => {
             isScrollingRef.current = false;
@@ -73,11 +70,17 @@ export const useVirtualization = () => {
         });
 
         observer.observe(container);
-        setContainerHeight(container.clientHeight);
+        
+        setContainerHeight(container.clientHeight || 800);
 
-        setTimeout(() => {
-            container.scrollTop = monthsDifference * CalendarUtils.MONTH_HEIGHT;
-        }, 100);
+        if (!isInitialized) {
+            const targetScrollTop = monthsDifference * CalendarUtils.MONTH_HEIGHT;
+            setTimeout(() => {
+                container.scrollTop = targetScrollTop;
+                setScrollTop(targetScrollTop);
+                setIsInitialized(true);
+            }, 50); // Reduced timeout
+        }
 
         return () => {
             observer.disconnect();
@@ -85,7 +88,7 @@ export const useVirtualization = () => {
                 clearTimeout(scrollTimeoutRef.current);
             }
         };
-    }, [monthsDifference]);
+    }, [monthsDifference, isInitialized]);
 
     return {
         scrollTop,
