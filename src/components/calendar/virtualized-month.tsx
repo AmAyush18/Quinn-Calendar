@@ -19,9 +19,9 @@ export const VirtualizedMonth: React.FC<VirtualizedMonthProps> = ({
     const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     
     return (
-        <div style={style} className="bg-stone-100 rounded-2xl shadow-2xl border-2 border-stone-300 mx-8 overflow-hidden">
-            <div className="bg-emerald-700 p-4">
-                <h3 className="font-black text-white text-2xl tracking-wider drop-shadow-md">
+        <div style={style} className="bg-stone-100 rounded-lg md:rounded-2xl shadow-2xl border-2 border-stone-300 mx-8 overflow-hidden">
+            <div className="bg-emerald-700 p-2 md:p-4">
+                <h3 className="font-black text-white text-lg md:text-2xl tracking-wider drop-shadow-md">
                     {DateUtils.formatDate(monthData.monthDate, 'MMMM yyyy')}
                 </h3>
             </div>
@@ -30,15 +30,15 @@ export const VirtualizedMonth: React.FC<VirtualizedMonthProps> = ({
                 {weekDays.map((day, index) => (
                     <div 
                         key={index} 
-                        className="p-2 text-center text-base font-bold text-stone-700 border-r-2 border-stone-300 last:border-r-0"
+                        className="p-2 text-center text-sm md:text-base text-semibold md:font-bold text-stone-700 border-r-2 border-stone-300 last:border-r-0"
                     >
-                        <div className="hidden sm:block">{day}</div>
-                        <div className="sm:hidden font-extrabold">{day.substring(0, 3)}</div>
+                        <div className="hidden md:block">{day}</div>
+                        <div className="md:hidden font-extrabold">{day.substring(0, 3)}</div>
                     </div>
                 ))}
             </div>
             
-            <div className="grid grid-cols-7 bg-stone-100 p-4 gap-3">
+            <div className="grid grid-cols-7 bg-stone-100 p-2 md:p-4 gap-3">
                 {monthData.days.map((day, index) => {
                     const entries = entriesByDate[day.dateKey] || [];
                     return (

@@ -16,7 +16,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({ day, entries, onEntryC
     
     return (
         <div 
-            className={`relative h-14 border-2 cursor-pointer transition-all duration-300 group rounded-xl overflow-hidden ${
+            className={`relative h-12 md:h-14 border md:border-2 cursor-pointer transition-all duration-300 group rounded-md md:rounded-xl overflow-hidden ${
                 !day.isCurrentMonth 
                     ? 'bg-stone-100 opacity-50 border-stone-200' 
                     : hasEntries
@@ -38,12 +38,12 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({ day, entries, onEntryC
             
             <div className={`absolute top-3 left-3 z-10 font-bold ${
                 isToday 
-                    ? 'bg-emerald-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-lg border-2 border-white' 
+                    ? 'bg-emerald-700 text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm shadow-md md:shadow-lg border md:border-2 border-white' 
                     : hasEntries && day.isCurrentMonth
-                        ? 'text-white drop-shadow-2xl text-lg bg-black/30 w-8 h-8 rounded-full flex items-center justify-center'
+                        ? 'text-white drop-shadow-md md:drop-shadow-2xl text-xs md:text-lg bg-black/30 rounded-full flex items-center justify-center'
                         : day.isCurrentMonth
-                            ? 'text-stone-700 text-lg'
-                            : 'text-stone-400 text-lg'
+                            ? 'text-stone-700 text-xs md:text-lg'
+                            : 'text-stone-400 text-xs md:text-lg'
             }`}>
                 {DateUtils.formatDate(day.date, 'd')}
             </div>
@@ -57,7 +57,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({ day, entries, onEntryC
             )}
             
             {hasEntries && day.isCurrentMonth && (
-                <div className="absolute bottom-3 right-3 z-10">
+                <div className="lg:block hidden absolute bottom-3 right-3 z-10">
                     <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-lg border border-stone-200">
                         <div className="flex items-center gap-1">
                             <span className="text-yellow-600 text-sm">★</span>
